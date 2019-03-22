@@ -79,14 +79,9 @@ public class ClientClass implements MqttCallback{
 
     }
 
-
-
-
-
-
     @Override
     public void connectionLost(Throwable cause) {
-        // TODO Auto-generated method stub
+        // TODO Put code here or something
 
     }
 
@@ -100,7 +95,7 @@ public class ClientClass implements MqttCallback{
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
-        // TODO Auto-generated method stub
+        // TODO Put code here or something
 
     }
 }
