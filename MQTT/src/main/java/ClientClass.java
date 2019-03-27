@@ -89,7 +89,7 @@ public class ClientClass implements MqttCallback{
     public void messageArrived(String topic, MqttMessage message)
             throws Exception {
         String[] Recieved = {topic, message.toString()};
-        this.MessageQueue.add(Recieved);
+        this.MessageQueue.addLast(Recieved);
         System.out.println("Added to queue");
     }
 
