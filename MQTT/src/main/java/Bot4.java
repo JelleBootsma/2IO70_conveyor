@@ -52,6 +52,8 @@ class Bot4 extends Component {
 
     mQTTBot4.out.placedItemSig = () -> {Runtime.callOut(this, () -> {mQTTBot4_placedItemSig();}, new Meta(this.mQTTBot4, "placedItemSig"));};
 
+    mQTTBot4.out.emergency = () -> {Runtime.callOut(this, () -> {mQTTBot4_emergency();}, new Meta(this.mQTTBot4, "emergency"));};
+
   }
   public void iBot4_assigned() {
     if (state == IBot4.State.Free) {
@@ -180,6 +182,10 @@ class Bot4 extends Component {
       state = IBot4.State.PostProcessing;
     }
     else this.runtime.illegal.action();
+  };
+
+  public void mQTTBot4_emergency() {
+    iBot4.out.emergency.action();
   };
 
 }

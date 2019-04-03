@@ -18,11 +18,11 @@ class MQTTBot2 extends Interface<MQTTBot2.In, MQTTBot2.Out> {
     Action takeItemSig;
     Action startSequenceSig;
     Action reboot;
-    Action takeItem;
   }
   class Out extends Interface.Out {
     Action sequenceReceived;
-    Action sequenceProcessed;
+    Action available;
+    Action emergency;
   }
   public MQTTBot2() {
     in = new In();

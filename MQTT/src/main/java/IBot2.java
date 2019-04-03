@@ -22,7 +22,8 @@ class IBot2 extends Interface<IBot2.In, IBot2.Out> {
   }
   class Out extends Interface.Out {
     Action sequenceReceived;
-    Action sequenceProcessed;
+    Action available;
+    Action emergency;
   }
   public IBot2() {
     in = new In();

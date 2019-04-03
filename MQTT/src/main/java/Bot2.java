@@ -45,7 +45,9 @@ class Bot2 extends Component {
 
     mQTTBot2.out.sequenceReceived = () -> {Runtime.callOut(this, () -> {mQTTBot2_sequenceReceived();}, new Meta(this.mQTTBot2, "sequenceReceived"));};
 
-    mQTTBot2.out.sequenceProcessed = () -> {Runtime.callOut(this, () -> {mQTTBot2_sequenceProcessed();}, new Meta(this.mQTTBot2, "sequenceProcessed"));};
+    mQTTBot2.out.available = () -> {Runtime.callOut(this, () -> {mQTTBot2_available();}, new Meta(this.mQTTBot2, "available"));};
+
+    mQTTBot2.out.emergency = () -> {Runtime.callOut(this, () -> {mQTTBot2_emergency();}, new Meta(this.mQTTBot2, "emergency"));};
 
   }
   public void iBot2_takeItemSig() {
@@ -86,12 +88,16 @@ class Bot2 extends Component {
     else this.runtime.illegal.action();
   };
 
-  public void mQTTBot2_sequenceProcessed() {
+  public void mQTTBot2_available() {
     if (state == Bot2.State.SequencePostProcessing) {
-      iBot2.out.sequenceProcessed.action();
+      iBot2.out.available.action();
       state = Bot2.State.Running;
     }
     else this.runtime.illegal.action();
+  };
+
+  public void mQTTBot2_emergency() {
+    iBot2.out.emergency.action();
   };
 
 }

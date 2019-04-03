@@ -12,16 +12,20 @@
  * @author s169626
  */
 public class Bot {
-    private int fixedLocation;
+
+    private int pickPoint;
+    private int dropPoint;
     private int botNr;
-    public Bot(int fixedLocation, int botNr){
-        this.fixedLocation = fixedLocation;
+    public Bot(int pickPoint, int dropPoint, int botNr){
+        this.pickPoint = pickPoint;
+        this.dropPoint = dropPoint;
         this.botNr = botNr;
         
     }
-    public int getFixedLocation(){
-        return fixedLocation;
+    public int getPickPoint(){
+        return pickPoint;
     }
+    public int getDropPoint() {return dropPoint; }
     public int getBotNr() { return botNr;}
     
 }

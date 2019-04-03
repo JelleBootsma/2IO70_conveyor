@@ -18,13 +18,12 @@ class IBeltController extends Interface<IBeltController.In, IBeltController.Out>
     bot2, bot3, bot4
   };
   class In extends Interface.In {
-    Action emergency;
     Action reboot;
     Action dropped;
     Action startSequence;
   }
   class Out extends Interface.Out {
-
+    Action emergency;
   }
   public IBeltController() {
     in = new In();

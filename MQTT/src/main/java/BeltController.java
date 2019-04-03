@@ -93,8 +93,6 @@ class BeltController extends Component {
     iGate.out.name = "iGate";
     iGate.out.self = this;
 
-    iBeltController.in.emergency = () -> {Runtime.callIn(this, () -> {iBeltController_emergency();}, new Meta(this.iBeltController, "emergency"));};
-
     iBeltController.in.reboot = () -> {Runtime.callIn(this, () -> {iBeltController_reboot();}, new Meta(this.iBeltController, "reboot"));};
 
     iBeltController.in.dropped = () -> {Runtime.callIn(this, () -> {iBeltController_dropped();}, new Meta(this.iBeltController, "dropped"));};
@@ -103,7 +101,9 @@ class BeltController extends Component {
 
     iBot2.out.sequenceReceived = () -> {Runtime.callOut(this, () -> {iBot2_sequenceReceived();}, new Meta(this.iBot2, "sequenceReceived"));};
 
-    iBot2.out.sequenceProcessed = () -> {Runtime.callOut(this, () -> {iBot2_sequenceProcessed();}, new Meta(this.iBot2, "sequenceProcessed"));};
+    iBot2.out.available = () -> {Runtime.callOut(this, () -> {iBot2_available();}, new Meta(this.iBot2, "available"));};
+
+    iBot2.out.emergency = () -> {Runtime.callOut(this, () -> {iBot2_emergency();}, new Meta(this.iBot2, "emergency"));};
 
     iBot3.out.availableSig = () -> {Runtime.callOut(this, () -> {iBot3_availableSig();}, new Meta(this.iBot3, "availableSig"));};
 
@@ -111,9 +111,13 @@ class BeltController extends Component {
 
     iBot3.out.placedItemSig = () -> {Runtime.callOut(this, () -> {iBot3_placedItemSig();}, new Meta(this.iBot3, "placedItemSig"));};
 
+    iBot3.out.emergency = () -> {Runtime.callOut(this, () -> {iBot3_emergency();}, new Meta(this.iBot3, "emergency"));};
+
     iBot4.out.availableSig = () -> {Runtime.callOut(this, () -> {iBot4_availableSig();}, new Meta(this.iBot4, "availableSig"));};
 
     iBot4.out.placeItemSig = () -> {Runtime.callOut(this, () -> {iBot4_placeItemSig();}, new Meta(this.iBot4, "placeItemSig"));};
+
+    iBot4.out.emergency = () -> {Runtime.callOut(this, () -> {iBot4_emergency();}, new Meta(this.iBot4, "emergency"));};
 
     iBot4.out.placedItemSig = () -> {Runtime.callOut(this, () -> {iBot4_placedItemSig();}, new Meta(this.iBot4, "placedItemSig"));};
 
@@ -124,32 +128,46 @@ class BeltController extends Component {
     iDisk4.out.diskArrived = () -> {Runtime.callOut(this, () -> {iDisk4_diskArrived();}, new Meta(this.iDisk4, "diskArrived"));};
 
   }
-  public void iBeltController_emergency() {
+  public void iBeltController_reboot() {
     if (state == BeltController.State.InitialState) {
+      iDisk2.in.reboot.action();
+      iDisk3.in.reboot.action();
+      iDisk4.in.reboot.action();
+      iBot2.in.reboot.action();
+      iBot3.in.reboot.action();
+      iBot4.in.reboot.action();
       iBeltEngines.in.stop.action();
-      state = BeltController.State.SystemEmergency;
+      state = BeltController.State.InitialState;
     }
     else if (state == BeltController.State.SystemRunning) {
+      iDisk2.in.reboot.action();
+      iDisk3.in.reboot.action();
+      iDisk4.in.reboot.action();
+      iBot2.in.reboot.action();
+      iBot3.in.reboot.action();
+      iBot4.in.reboot.action();
       iBeltEngines.in.stop.action();
-      state = BeltController.State.SystemEmergency;
+      state = BeltController.State.InitialState;
     }
     else if (state == BeltController.State.Sequence) {
+      iDisk2.in.reboot.action();
+      iDisk3.in.reboot.action();
+      iDisk4.in.reboot.action();
+      iBot2.in.reboot.action();
+      iBot3.in.reboot.action();
+      iBot4.in.reboot.action();
       iBeltEngines.in.stop.action();
-      state = BeltController.State.SystemEmergency;
+      state = BeltController.State.InitialState;
     }
     else if (state == BeltController.State.EndingSequence) {
-      iBeltEngines.in.stop.action();
-      state = BeltController.State.SystemEmergency;
+      iDisk2.in.reboot.action();
+      iDisk3.in.reboot.action();
+      iDisk4.in.reboot.action();
+      iBot2.in.reboot.action();
+      iBot3.in.reboot.action();
+      iBot4.in.reboot.action();
+      state = BeltController.State.InitialState;
     }
-    else if (state == BeltController.State.SystemEmergency) { }
-    else this.runtime.illegal.action();
-  };
-
-  public void iBeltController_reboot() {
-    if (state == BeltController.State.InitialState) { }
-    else if (state == BeltController.State.SystemRunning) { }
-    else if (state == BeltController.State.Sequence) { }
-    else if (state == BeltController.State.EndingSequence) { }
     else if (state == BeltController.State.SystemEmergency) {
       iDisk2.in.reboot.action();
       iDisk3.in.reboot.action();
@@ -235,7 +253,7 @@ class BeltController extends Component {
     else this.runtime.illegal.action();
   };
 
-  public void iBot2_sequenceProcessed() {
+  public void iBot2_available() {
     if (state == BeltController.State.Sequence) {
       this.runtime.illegal.action();
     }
@@ -246,6 +264,27 @@ class BeltController extends Component {
     else if (state == BeltController.State.EndingSequence) {
       iBeltEngines.in.start.action();
       state = BeltController.State.SystemRunning;
+    }
+    else if (state == BeltController.State.SystemEmergency) { }
+    else this.runtime.illegal.action();
+  };
+
+  public void iBot2_emergency() {
+    if (state == BeltController.State.InitialState) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.SystemRunning) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.Sequence) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.EndingSequence) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
     }
     else if (state == BeltController.State.SystemEmergency) { }
     else this.runtime.illegal.action();
@@ -313,6 +352,27 @@ class BeltController extends Component {
     else this.runtime.illegal.action();
   };
 
+  public void iBot3_emergency() {
+    if (state == BeltController.State.InitialState) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.SystemRunning) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.Sequence) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.EndingSequence) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.SystemEmergency) { }
+    else this.runtime.illegal.action();
+  };
+
   public void iBot4_availableSig() {
     if (state == BeltController.State.SystemRunning) {
       V<IDisk4.State> diskState = new V <IDisk4.State>(iDisk4.in.getState.action());
@@ -354,6 +414,27 @@ class BeltController extends Component {
     else this.runtime.illegal.action();
   };
 
+  public void iBot4_emergency() {
+    if (state == BeltController.State.InitialState) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.SystemRunning) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.Sequence) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.EndingSequence) {
+      iBeltEngines.in.stop.action();
+      state = BeltController.State.SystemEmergency;
+    }
+    else if (state == BeltController.State.SystemEmergency) { }
+    else this.runtime.illegal.action();
+  };
+
   public void iBot4_placedItemSig() {
     if (state == BeltController.State.SystemRunning) {
       bot3GrantedState = false;
@@ -379,16 +460,19 @@ class BeltController extends Component {
     if (state == BeltController.State.SystemRunning) {
       iGate.in.openGate.action();
       iGate.in.closeGate.action();
+      iDisk2.in.unAssign.action();
       iBot2.in.takeItemSig.action();
     }
     else if (state == BeltController.State.Sequence) {
       iBot2.in.takeItemSig.action();
+      iDisk2.in.unAssign.action();
       iGate.in.openGate.action();
       iGate.in.closeGate.action();
     }
     else if (state == BeltController.State.EndingSequence) {
       iBot2.in.takeItemSig.action();
       iGate.in.openGate.action();
+      iDisk2.in.unAssign.action();
       iGate.in.closeGate.action();
     }
     else if (state == BeltController.State.SystemEmergency) { }

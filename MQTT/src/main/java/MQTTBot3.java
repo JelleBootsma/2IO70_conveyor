@@ -24,6 +24,7 @@ class MQTTBot3 extends Interface<MQTTBot3.In, MQTTBot3.Out> {
     Action availableSig;
     Action placeItemSig;
     Action placedItemSig;
+    Action emergency;
   }
   public MQTTBot3() {
     in = new In();

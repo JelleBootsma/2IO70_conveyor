@@ -17,6 +17,8 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.wiringpi.Gpio;
+import com.pi4j.wiringpi.SoftPwm;
 
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -29,16 +31,23 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Gate implements Runnable {
 
     LinkedBlockingQueue<String> blockingQueue;
+    GpioController gpio = GpioFactory.getInstance();
+    // provision gpio pin #01 as an output pin and turn on
+    final GpioPinDigitalOutput pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "forwards", PinState.LOW);
 
     public Gate(LinkedBlockingQueue<String> blockingQueue){
+
         this.blockingQueue = blockingQueue;
+
     }
     
     @Override
     public void run(){
         while (true) {
             try{
+
                 blockingQueue.take();
+
             } catch (Exception e){
                 System.out.println("BlockingQueue exception " + e.toString());
             }
@@ -52,19 +61,12 @@ public class Gate implements Runnable {
     }
 
     public void sendOpenSignalToPin() {
-        
-        
-        
-        // create gpio controller
-        
-       GpioController gpio = GpioFactory.getInstance();
-        // provision gpio pin #01 as an output pin and turn on
-        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "pin", PinState.HIGH);
 
-        // set shutdown state for this pin
-        pin.setShutdownOptions(true, PinState.LOW);
-        
 
+
+        System.out.println("pin1 state" + pin1.getState().toString());
+        pin1.high();
+        System.out.println("pin1 state" + pin1.getState().toString());
         System.out.println("--> GPIO state should be: ON");
         try {
             Thread.sleep(1000);
@@ -79,12 +81,9 @@ public class Gate implements Runnable {
         
         // create gpio controller
         
-       GpioController gpio = GpioFactory.getInstance();
+        pin1.low();
         // provision gpio pin #01 as an output pin and turn on
-        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "pin", PinState.LOW);
 
-        // set shutdown state for this pin
-        pin.setShutdownOptions(true, PinState.LOW);
         
 
         System.out.println("--> GPIO state should be: OFF");

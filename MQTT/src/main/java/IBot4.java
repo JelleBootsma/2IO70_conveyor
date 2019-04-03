@@ -25,6 +25,7 @@ class IBot4 extends Interface<IBot4.In, IBot4.Out> {
   class Out extends Interface.Out {
     Action availableSig;
     Action placeItemSig;
+    Action emergency;
     Action placedItemSig;
   }
   public IBot4() {

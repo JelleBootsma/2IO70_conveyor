@@ -25,16 +25,16 @@ public class Main {
         LinkedBlockingQueue<String> blockingQueue = new LinkedBlockingQueue<>();
         
 
-        private Bot bot2 = new Bot(10, 2);
-        private Bot bot3 = new Bot(20, 3);
-        private Bot bot4 = new Bot(30, 4);
+        private Bot bot2 = new Bot(2, 3, 2);
+        private Bot bot3 = new Bot(5, 7,3);
+        private Bot bot4 = new Bot(13, 24,4);
         
         
         Belt belt;
-        private DiskManager diskManager = new DiskManager(belt);
-        ClientClass mqtt = new ClientClass("tcp://192.168.0.2");
-        LinkedList<String> gpioInputQueue = new LinkedList<String>();
 
+        ClientClass mqtt = new ClientClass("tcp://192.168.0.3");
+        LinkedList<String> gpioInputQueue = new LinkedList<String>();
+        private DiskManager diskManager;
         Engine engine = new Engine();
 
 
@@ -45,7 +45,7 @@ public class Main {
 
         locator.set(runtime);
         belt = new Belt(locator);
-
+         diskManager = new DiskManager(belt);
 
         
         
@@ -75,16 +75,16 @@ public class Main {
         
         //Cleanup unlogical Dezyne Choice (When extra time I'll fix this [TIJS])
         belt.iDisk2Com.in.assignedD = () -> { newDiskAssigned(bot2, 0); };
-        belt.iDisk2Com.in.assigned3 = () -> { newDiskAssigned(bot2, 10); };
-        belt.iDisk2Com.in.assigned4 = () -> { newDiskAssigned(bot2, 20); };
+        belt.iDisk2Com.in.assigned3 = () -> { newDiskAssigned(bot2, bot3.getDropPoint()); };
+        belt.iDisk2Com.in.assigned4 = () -> { newDiskAssigned(bot2, bot4.getDropPoint()); };
 
         belt.iDisk3Com.in.assignedD = () -> { newDiskAssigned(bot3, 0); };
-        belt.iDisk3Com.in.assigned3 = () -> { newDiskAssigned(bot3, 10); };
-        belt.iDisk3Com.in.assigned4 = () -> { newDiskAssigned(bot3, 20); };
+        belt.iDisk3Com.in.assigned3 = () -> { newDiskAssigned(bot3, bot3.getDropPoint()); };
+        belt.iDisk3Com.in.assigned4 = () -> { newDiskAssigned(bot3, bot4.getDropPoint()); };
 
         belt.iDisk4Com.in.assignedD = () -> { newDiskAssigned(bot4, 0); };
-        belt.iDisk4Com.in.assigned3 = () -> { newDiskAssigned(bot4, 10); };
-        belt.iDisk4Com.in.assigned4 = () -> { newDiskAssigned(bot4, 20); };
+        belt.iDisk4Com.in.assigned3 = () -> { newDiskAssigned(bot4, bot3.getDropPoint()); };
+        belt.iDisk4Com.in.assigned4 = () -> { newDiskAssigned(bot4, bot4.getDropPoint()); };
 
         belt.iDisk2Com.in.reboot = this::unAssignDisks;
         belt.iDisk3Com.in.reboot = this::unAssignDisks;
@@ -116,6 +116,7 @@ public class Main {
                 }
                 if (gpioInputQueue.getFirst().equals("dropped")) {
                     belt.iBeltcontroller.in.dropped.action();
+
                 }
                 if (gpioInputQueue.getFirst().equals("startSequence")) {
                     belt.iBeltcontroller.in.dropped.action();
@@ -132,7 +133,7 @@ public class Main {
                         belt.mQTTBot2.out.sequenceReceived.action();
                     }
                     if(mqtt.MessageQueue.getFirst()[1].equals("sequenceProcessed")){
-                        belt.mQTTBot2.out.sequenceProcessed.action();
+                        belt.mQTTBot2.out.available.action();
                     }
                     if (mqtt.MessageQueue.getFirst()[1].equals("reboot")) {
                         belt.iBeltcontroller.in.reboot.action();
@@ -244,6 +245,7 @@ public class Main {
 
     private void newDiskAssigned(Bot bot, int location){
         Disk disk = new Disk(location, bot);
+        System.out.println("disk added!!!");
         diskManager.addDiskToList(disk);
     }
 

@@ -26,6 +26,7 @@ class IBot3 extends Interface<IBot3.In, IBot3.Out> {
     Action availableSig;
     Action placeItemSig;
     Action placedItemSig;
+    Action emergency;
   }
   public IBot3() {
     in = new In();

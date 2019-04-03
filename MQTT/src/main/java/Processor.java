@@ -66,14 +66,14 @@ public class Processor implements Runnable{
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
-                if(event.getState().isLow()){
+                if(event.getState().isHigh()){
                     gpioInputQueue.addLast("dropped");
                 }
             }
 
         });
         
-        final GpioPinDigitalInput reboot = gpio.provisionDigitalInputPin(RaspiPin.GPIO_27, PinPullResistance.PULL_DOWN);
+        final GpioPinDigitalInput reboot = gpio.provisionDigitalInputPin(RaspiPin.GPIO_16, PinPullResistance.PULL_DOWN);
 
         // set shutdown state for this input pin
         reboot.setShutdownOptions(true);

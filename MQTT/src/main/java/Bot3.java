@@ -52,6 +52,8 @@ class Bot3 extends Component {
 
     mQTTBot3.out.placedItemSig = () -> {Runtime.callOut(this, () -> {mQTTBot3_placedItemSig();}, new Meta(this.mQTTBot3, "placedItemSig"));};
 
+    mQTTBot3.out.emergency = () -> {Runtime.callOut(this, () -> {mQTTBot3_emergency();}, new Meta(this.mQTTBot3, "emergency"));};
+
   }
   public void iBot3_assigned() {
     if (state == IBot3.State.Free) {
@@ -180,6 +182,10 @@ class Bot3 extends Component {
       state = IBot3.State.PostProcessing;
     }
     else this.runtime.illegal.action();
+  };
+
+  public void mQTTBot3_emergency() {
+    iBot3.out.emergency.action();
   };
 
 }

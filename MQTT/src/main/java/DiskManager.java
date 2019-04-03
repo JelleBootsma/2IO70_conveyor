@@ -22,13 +22,18 @@ public class DiskManager {
     }
     
     public void movement(){
+        LinkedList disksToBeRemoved = new LinkedList<Disk>();
         for(Disk disk : diskList){
             int x = disk.getLocation();
             disk.setLocation((x+1)%50);
-            if(disk.getLocation() == disk.getAssignedBot().getFixedLocation()){
+            System.out.println("disk location " + disk.getLocation());
+            System.out.println("assignedBot location " + disk.getAssignedBot().getPickPoint());
+            if(disk.getLocation() == disk.getAssignedBot().getPickPoint()){
                 arrived(disk);
+                disksToBeRemoved.addLast(disk);
             }
         }
+        disksToBeRemoved.removeAll(disksToBeRemoved);
         
     }
     
@@ -42,12 +47,14 @@ public class DiskManager {
     
     public void arrived(Disk disk){
 
-        removeFromList(disk);
+
         if(disk.getAssignedBot().getBotNr() == 2){
             belt.iDisk2Com.out.diskArrived.action();
         }
         if(disk.getAssignedBot().getBotNr() == 3){
+
             belt.iDisk3Com.out.diskArrived.action();
+
         }
         if(disk.getAssignedBot().getBotNr() == 4){
             belt.iDisk4Com.out.diskArrived.action();
