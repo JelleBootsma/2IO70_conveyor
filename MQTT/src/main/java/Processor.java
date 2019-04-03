@@ -36,10 +36,15 @@ public class Processor implements Runnable{
     private LinkedList<String> gpioInputQueue;
     private DiskManager diskManager;
 
+    private Display window;
+
     
     public Processor(LinkedList<String> gpioInputQueue, DiskManager diskManager){
         this.gpioInputQueue = gpioInputQueue;
         this.diskManager = diskManager;
+        this.window = new Display(this.diskManager);
+        this.window.Build();
+
         
     }
     
@@ -113,6 +118,7 @@ public class Processor implements Runnable{
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 // display pin state on console
                 diskManager.movement();
+                window.Refresh();
             }
 
         });
