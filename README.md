@@ -1,9 +1,16 @@
 # 2IO70-Conveyor Java Implementation
 
-This repository contains a Java implementation of the conveyor belt driver for the TU/e course 2IO70. The conveyor communicates using the protocol as described in [2IO70-COM](https://github.com/JelleBootsma/2IO70-COM). The protocol version used in this implementation is V1.1.
+This repository contains a Java implementation of the conveyor belt driver for the TU/e course 2IO70, developed by 
+
+- J.H. Bootsma
+- T.P.H. Hoeijmakers
+- W. van Oorschot
+- C.P.A. Aarts
+  
+The conveyor communicates using the protocol as described in [2IO70-COM](https://github.com/JelleBootsma/2IO70-COM). The protocol version used in this implementation is V1.1.
 
 ## Overview
- The conveyor belt system is designed to transport black or white disks between multiple bots. These bots perform various operations such as taking an item from the belt, placing an item on the belt, and detecting the sequential order of disks using a bot equipped with a light detector
+The conveyor belt system is designed to transport black or white disks between multiple bots. These bots perform various operations such as taking an item from the belt, placing an item on the belt, and detecting the sequential order of disks using a bot equipped with a light detector
  
 The conveyor belt driver is responsible for controlling the conveyor belt system and facilitating communication between bots. It utilizes MQTT (Message Queuing Telemetry Transport), a lightweight M2M (Machine to Machine) or IoT protocol, for sending and receiving signals between bots. The main focus of MQTT is data integrity and reliability, making it a suitable choice for communication in our robot system.
 
